@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Freelancer - Start Bootstrap Theme</title>
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link href="vendor/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template -->
+    <link href="css/freelancer.min.css" rel="stylesheet">
+    <style>
+      video::-webkit-media-controls {
+        display:none !important;
+      }
+      .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+
+  </head>
+
+  <body id="page-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">Music4U</a>
+        <button class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="masthead bg-primary text-white text-center">
+
+
+      <body onload="init();">
+        <h1> &#160; Welcome to Music4U.</h1>
+        <h4>Click 'Take Snapshot' to take your picture and play music!</h4>
+         <p>
+         <br> </br>
+
+        <button onclick="startWebcam();" class='btn btn-primary' style="display:none" id="webcam">Start WebCam</button>
+
+           <button onclick="snapshot();" class='btn btn-secondary btn-lg' id="snap">Take Snapshot</button>
+        </p>
+        <div>
+          <div class="loader" style="position:absolute; margin:auto; top: 50%; left: 50%; margin-top: 300px; margin-left: -50px; display:none" id="spinner"></div>
+          <video width=600 height=600 id="video" controls autoplay></video>
+
+        </div>
+
+      <!--<p>
+
+            Your Photo! : <p>-->
+          <canvas  id="myCanvas" width="600" height="600" style="display:none"></canvas>
+
+    </header>
+
+    <!-- Portfolio Grid Section -->
+
+
+    <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
+    <div class="scroll-to-top d-lg-none position-fixed ">
+      <a class="js-scroll-trigger d-block text-center text-white rounded" href="#page-top">
+        <i class="fa fa-chevron-up"></i>
+      </a>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="js/freelancer.min.js"></script>
+
+    <script>
+        //--------------------
+        // GET USER MEDIA CODE
+        //--------------------
+            navigator.getUserMedia = ( navigator.getUserMedia ||
+                               navigator.webkitGetUserMedia ||
+                               navigator.mozGetUserMedia ||
+                               navigator.msGetUserMedia);
+
+        var video;
+        var webcamStream;
+
+        function startWebcam() {
+          if (navigator.getUserMedia) {
+             navigator.getUserMedia (
+
+                // constraints
+                {
+                   video: true,
+                   audio: false
+                },
+
+                // successCallback
+                function(localMediaStream) {
+                    video = document.querySelector('video');
+                   video.src = window.URL.createObjectURL(localMediaStream);
+                   webcamStream = localMediaStream;
+                },
+
+                // errorCallback
+                function(err) {
+                   console.log("The following error occured: " + err);
+                }
+             );
+          } else {
+             console.log("getUserMedia not supported");
+          }
+        }
+
+        //---------------------
+        // TAKE A SNAPSHOT CODE
+        //---------------------
+        var canvas, ctx;
+
+        function init() {
+          // Get the canvas and obtain a context for
+          // drawing in it
+          canvas = document.getElementById("myCanvas");
+          ctx = canvas.getContext('2d');
+        }
+
+        function snapshot() {
+           // Draws current image from the video element into the canvas
+          ctx.drawImage(video, 0,0, canvas.width, canvas.height);
+          $("#spinner").css('display', 'inline-block');
+          $("#snap").prop("disabled",true);
+
+          var image = new Image();
+          image.id = "pic"
+          image.src = canvas.toDataURL();
+
+          canvasToImg()
+
+        }
+
+        function canvasToImg() {
+          var canvas = document.getElementById("myCanvas");
+          var ctx=canvas.getContext("2d");
+          //draw a red box
+          var url = canvas.toDataURL();
+
+          console.log(url);
+          var newImg = document.createElement("img"); // create img tag
+          newImg.src = url;
+          // document.body.appendChild(newImg); // add to end of your document
+
+           callAjax(url)
+
+    }
+
+    function base64ToBlob(base64, mime)
+    {
+       mime = mime || '';
+       var sliceSize = 1024;
+       var byteChars = window.atob(base64);
+       var byteArrays = [];
+
+       for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+           var slice = byteChars.slice(offset, offset + sliceSize);
+
+           var byteNumbers = new Array(slice.length);
+           for (var i = 0; i < slice.length; i++) {
+               byteNumbers[i] = slice.charCodeAt(i);
+           }
+
+           var byteArray = new Uint8Array(byteNumbers);
+
+           byteArrays.push(byteArray);
+       }
+
+       return new Blob(byteArrays, {type: mime});
+    }
+    $(document).ready(function(){
+      startWebcam();
+    });
+
+    function callAjax(image) {
+       var url = "http://localhost:5000";
+       var base64ImageContent = image.replace(/^data:image\/(png|jpg);base64,/, "");
+       var blob = base64ToBlob(base64ImageContent, 'image/jpg');
+       var formData = new FormData();
+       formData.append('img', blob, "testimg.jpg");
+
+       $.ajax({
+       url: url,
+       type: "POST",
+       cache: false,
+       contentType: false,
+       processData: false,
+       data: formData,
+       dataType:'json',
+       complete:function(){
+         $("#spinner").css('display', 'none');
+         $("#snap").prop("disabled",false);
+       }
+     });
+
+    }
+
+
+
+     </script>
+
+
+  </body>
+
+</html>
